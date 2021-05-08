@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TVS Navigator</string>
+    <string name="tvs_google_maps_navigation">TVS GOOGLE MAPS NAVIGATION</string>
+    <string name="start_service">Start Service</string>
+    <string name="connect_ble">Connect BLE</string>
+    <string name="start_navigation">START NAVIGATION</string>
+    <string name="stop_navigation">STOP NAVIGATION</string>
+    <string name="stop_service">STOP SERVICE</string>
+</resources>
