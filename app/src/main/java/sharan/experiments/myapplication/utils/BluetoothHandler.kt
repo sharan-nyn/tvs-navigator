@@ -15,7 +15,7 @@ class BluetoothHandler(context: Context) {
     private val TVS_SERVICE_UUID: UUID = UUID.fromString("00005500-d102-11e1-9b23-000240198212")
     private val TVS_WRITE_CHARACTERISTIC_UUID: UUID = UUID.fromString("00005502-d102-11e1-9b23-000240198212")
 
-    private lateinit var tvsPeripheral: BluetoothPeripheral
+    private var tvsPeripheral: BluetoothPeripheral
     private lateinit var tvsWriteCharacteristic: BluetoothGattCharacteristic
 
     private var isConnected = false
@@ -130,7 +130,7 @@ class BluetoothHandler(context: Context) {
         }
     }
 
-    fun cancelConnections() {
+    public fun cancelConnections() {
         centralManager.cancelConnection(tvsPeripheral)
     }
 

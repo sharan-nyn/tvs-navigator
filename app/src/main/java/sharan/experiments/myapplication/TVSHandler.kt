@@ -1,5 +1,6 @@
 package sharan.experiments.myapplication
 
+import android.content.Context
 import android.telephony.SmsManager
 import android.util.Log
 import com.welie.blessed.BluetoothBytesParser
@@ -9,7 +10,8 @@ import sharan.experiments.myapplication.utils.BluetoothHandler
 import java.util.*
 
 
-class TVSHandler(private var bluetoothHandler: BluetoothHandler) {
+class TVSHandler(context: Context) {
+    private var bluetoothHandler: BluetoothHandler = BluetoothHandler(context)
     private var encodedN = "4e"
     private var encodedO = "4f"
     private var encodedDollar = "24"
@@ -221,5 +223,13 @@ class TVSHandler(private var bluetoothHandler: BluetoothHandler) {
         }
         Log.d("SMS", "Sending SMS $smsText")
         smsManager.sendTextMessage(phoneNumber, null, smsText, null, null)
+    }
+
+    fun cancelConnections() {
+        bluetoothHandler.cancelConnections()
+    }
+
+    fun connectToTVS() {
+        bluetoothHandler.connectToTVS()
     }
 }

@@ -35,13 +35,11 @@ class MainNotificationService : Service() {
 
     lateinit var directionImageMapper: DirectionImageMapper
     lateinit var tvsHandler: TVSHandler
-    lateinit var bluetoothHandler: BluetoothHandler
 
     override fun onCreate() {
         super.onCreate()
         directionImageMapper = DirectionImageMapper(applicationContext)
-        bluetoothHandler = BluetoothHandler(applicationContext)
-        tvsHandler = TVSHandler(bluetoothHandler)
+        tvsHandler = TVSHandler(applicationContext)
         phoneListener = PhoneListener()
     }
 
@@ -80,7 +78,7 @@ class MainNotificationService : Service() {
         unregisterReceiver(navigationServiceBroadcastReceiver)
         tvsHandler.stopNavigation()
         tvsHandler.stopConnectionAlive()
-        bluetoothHandler.cancelConnections()
+        tvsHandler.cancelConnections()
         super.onDestroy()
     }
 
@@ -126,7 +124,7 @@ class MainNotificationService : Service() {
 
                 CONNECT_BT -> {
                     Log.d(receiverTag, "got connect BT request")
-                    bluetoothHandler.connectToTVS()
+                    tvsHandler.connectToTVS()
                     tvsHandler.keepConnectionAlive()
                 }
 
