@@ -1,6 +1,6 @@
 package sharan.experiments.myapplication.services
 
-import android.R
+import android.R.drawable
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
@@ -21,8 +21,8 @@ import me.trevi.navparser.lib.NavigationData
 import me.trevi.navparser.service.NAVIGATION_DATA
 import sharan.experiments.myapplication.App.Companion.CHANNEL_ID
 import sharan.experiments.myapplication.MainActivity
+import sharan.experiments.myapplication.R
 import sharan.experiments.myapplication.TVSHandler
-import sharan.experiments.myapplication.utils.BluetoothHandler
 import sharan.experiments.myapplication.utils.Direction
 import sharan.experiments.myapplication.utils.DirectionImageMapper
 
@@ -30,16 +30,16 @@ import sharan.experiments.myapplication.utils.DirectionImageMapper
 class MainNotificationService : Service() {
     private val navigationServiceBroadcastReceiver = NavigationServiceBroadcastReceiver()
 
-    private lateinit var phoneListener:PhoneListener
+    private lateinit var phoneListener: PhoneListener
     private var phoneListenerCount = 0
+    private var tvsHandlerInit = false
 
-    lateinit var directionImageMapper: DirectionImageMapper
-    lateinit var tvsHandler: TVSHandler
+    private lateinit var directionImageMapper: DirectionImageMapper
+    private lateinit var tvsHandler: TVSHandler
 
     override fun onCreate() {
         super.onCreate()
         directionImageMapper = DirectionImageMapper(applicationContext)
-        tvsHandler = TVSHandler(applicationContext)
         phoneListener = PhoneListener()
     }
 
@@ -51,11 +51,11 @@ class MainNotificationService : Service() {
         )
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("TVS Navigation Service")
-                .setContentText("Ready to start navigation")
-                .setSmallIcon(R.drawable.ic_dialog_info)
-                .setContentIntent(pendingIntent)
-                .build()
+            .setContentTitle("TVS Navigation Service")
+            .setContentText("Ready to start navigation")
+            .setSmallIcon(drawable.ic_dialog_info)
+            .setContentIntent(pendingIntent)
+            .build()
 
         startForeground(1, notification)
 
@@ -76,34 +76,12 @@ class MainNotificationService : Service() {
 
     override fun onDestroy() {
         unregisterReceiver(navigationServiceBroadcastReceiver)
-        tvsHandler.stopNavigation()
-        tvsHandler.stopConnectionAlive()
-        tvsHandler.cancelConnections()
-        super.onDestroy()
-    }
-
-    private fun processNavigationData(navData: NavigationData) {
-        val isRerouting = navData.isRerouting
-        val direction = navData.actionIcon.bitmap?.let { directionImageMapper.getDirectionFromImage(
-            it
-        ) }
-        val distance = navData.nextDirection.navigationDistance?.distance
-        val unit = navData.nextDirection.navigationDistance?.unit
-        if (isRerouting) {
-            tvsHandler.updateAsRerouting()
-        } else if (direction != null && distance != null && unit != null) {
-            val pairPictogramDirection = Direction.getTVSPictogramAndDirection(direction)
-            Log.d("tvsData", "$pairPictogramDirection")
-            tvsHandler.updateValues(
-                pairPictogramDirection.second,
-                distance,
-                unit,
-                pairPictogramDirection.first,
-                navData.remainingDistance.distance,
-                navData.remainingDistance.unit,
-                navData
-            )
+        if (tvsHandlerInit) {
+            tvsHandler.stopNavigation()
+            tvsHandler.stopConnectionAlive()
+            tvsHandler.cancelConnections()
         }
+        super.onDestroy()
     }
 
     @Nullable
@@ -124,23 +102,70 @@ class MainNotificationService : Service() {
 
                 CONNECT_BT -> {
                     Log.d(receiverTag, "got connect BT request")
-                    tvsHandler.connectToTVS()
-                    tvsHandler.keepConnectionAlive()
+                    initTVSHandler()
+
+                    if (tvsHandlerInit) {
+                        tvsHandler.connectToTVS()
+                        tvsHandler.keepConnectionAlive()
+                    }
                 }
 
                 START_NAV -> {
-                    tvsHandler.startNavigation()
+                    if (tvsHandlerInit)
+                        tvsHandler.startNavigation()
                 }
 
                 STOP_NAV -> {
-                    tvsHandler.stopNavigation()
+                    if (tvsHandlerInit)
+                        tvsHandler.stopNavigation()
                 }
             }
 
         }
     }
 
-    private fun getContactName(phoneNumber: String?, context: Context): String? {
+    private fun initTVSHandler() {
+        val address = getDeviceAddress()
+        if (!address.isNullOrEmpty()) {
+            tvsHandler = TVSHandler(applicationContext, address)
+            tvsHandlerInit = true
+        }
+    }
+
+    private fun getDeviceAddress(): String? {
+        val sharedPreferences = getSharedPreferences(packageName, MODE_PRIVATE)
+        return sharedPreferences.getString(getString(R.string.device_address), null)
+    }
+
+    private fun processNavigationData(navData: NavigationData) {
+        val isRerouting = navData.isRerouting
+        val direction = navData.actionIcon.bitmap?.let {
+            directionImageMapper.getDirectionFromImage(
+                it
+            )
+        }
+        val distance = navData.nextDirection.navigationDistance?.distance
+        val unit = navData.nextDirection.navigationDistance?.unit
+        if (isRerouting) {
+            if (tvsHandlerInit)
+                tvsHandler.updateAsRerouting()
+        } else if (direction != null && distance != null && unit != null) {
+            val pairPictogramDirection = Direction.getTVSPictogramAndDirection(direction)
+            Log.d("tvsData", "$pairPictogramDirection")
+            if (tvsHandlerInit)
+                tvsHandler.updateValues(
+                    pairPictogramDirection.second,
+                    distance,
+                    unit,
+                    pairPictogramDirection.first,
+                    navData.remainingDistance.distance,
+                    navData.remainingDistance.unit,
+                    navData
+                )
+        }
+    }
+
+    private fun getContactName(phoneNumber: String?, context: Context): String {
         if (phoneNumber.isNullOrEmpty()) return ""
 
         val uri: Uri = Uri.withAppendedPath(
@@ -160,7 +185,7 @@ class MainNotificationService : Service() {
         return contactName
     }
 
-    inner class PhoneListener: PhoneStateListener() {
+    inner class PhoneListener : PhoneStateListener() {
         private var tag: String = javaClass.name
         private var isContact = true
         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
@@ -171,10 +196,11 @@ class MainNotificationService : Service() {
             var myPhoneNumber = phoneNumber
 
             if (phoneNumber.startsWith("+91") && phoneNumber.length > 10) {
-                myPhoneNumber = phoneNumber.substring(3); // reduce number to 10 characters if extension exists
+                myPhoneNumber =
+                    phoneNumber.substring(3) // reduce number to 10 characters if extension exists
             }
 
-            if (callerName.isNullOrEmpty()) {
+            if (callerName.isEmpty()) {
                 isContact = false
                 callerName = myPhoneNumber
             } else {
@@ -187,12 +213,14 @@ class MainNotificationService : Service() {
                     if (phoneListenerCount >= 1) {
                         phoneListenerCount = 0
                         // Send SMS for missed call.
-                        tvsHandler.stopShowingIncomingCallMessage(phoneNumber, isContact)
+                        if (tvsHandlerInit)
+                            tvsHandler.stopShowingIncomingCallMessage(phoneNumber, isContact)
                     }
                 }
                 TelephonyManager.CALL_STATE_OFFHOOK -> {
                     phoneListenerCount = -1
-                    tvsHandler.stopShowingIncomingCallMessage("", isContact)
+                    if (tvsHandlerInit)
+                        tvsHandler.stopShowingIncomingCallMessage("", isContact)
                 }
                 TelephonyManager.CALL_STATE_RINGING -> {
                     phoneListenerCount++
@@ -200,7 +228,8 @@ class MainNotificationService : Service() {
                         phoneListenerCount = 0
                         // Send signal for showing incoming message.
                         Log.d(tag, "Incoming call - Name: $callerName, Number: $myPhoneNumber")
-                        tvsHandler.startShowingIncomingCallMessage(callerName)
+                        if (tvsHandlerInit)
+                            tvsHandler.startShowingIncomingCallMessage(callerName)
                     }
                 }
             }

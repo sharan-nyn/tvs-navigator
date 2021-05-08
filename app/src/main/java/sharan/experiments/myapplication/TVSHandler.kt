@@ -10,8 +10,8 @@ import sharan.experiments.myapplication.utils.BluetoothHandler
 import java.util.*
 
 
-class TVSHandler(context: Context) {
-    private var bluetoothHandler: BluetoothHandler = BluetoothHandler(context)
+class TVSHandler(context: Context, deviceAddress: String) {
+    private var bluetoothHandler: BluetoothHandler = BluetoothHandler(context, deviceAddress)
     private var encodedN = "4e"
     private var encodedO = "4f"
     private var encodedDollar = "24"

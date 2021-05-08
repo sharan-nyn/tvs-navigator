@@ -10,7 +10,7 @@ import com.welie.blessed.*
 import java.util.*
 
 
-class BluetoothHandler(context: Context) {
+class BluetoothHandler(context: Context, deviceAddress: String) {
     private var centralManager: BluetoothCentralManager
     private val TVS_SERVICE_UUID: UUID = UUID.fromString("00005500-d102-11e1-9b23-000240198212")
     private val TVS_WRITE_CHARACTERISTIC_UUID: UUID = UUID.fromString("00005502-d102-11e1-9b23-000240198212")
@@ -56,7 +56,7 @@ class BluetoothHandler(context: Context) {
         centralManager = BluetoothCentralManager(
                 context, bluetoothCentralManagerCallback, Handler(Looper.getMainLooper())
         )
-        tvsPeripheral = centralManager.getPeripheral("CC:88:26:18:42:92")
+        tvsPeripheral = centralManager.getPeripheral(deviceAddress)
     }
 
     private fun getWriteCharacteristic() {
@@ -130,7 +130,7 @@ class BluetoothHandler(context: Context) {
         }
     }
 
-    public fun cancelConnections() {
+    fun cancelConnections() {
         centralManager.cancelConnection(tvsPeripheral)
     }
 
