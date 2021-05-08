@@ -2,8 +2,12 @@ package sharan.experiments.myapplication
 
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
@@ -16,27 +20,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stopService: Button
     private lateinit var startNavigation: Button
     private lateinit var stopNavigation: Button
+    private lateinit var deviceString: TextView
 
     private var serviceStarted = false
+    private var deviceHWAddressAvailable = false
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         connectBtn = findViewById(R.id.connectBtn)
-
+        deviceString = findViewById(R.id.bluetoothDeviceAddressTV)
         startService = findViewById(R.id.startService)
         stopService = findViewById(R.id.stopService)
 
         startNavigation = findViewById(R.id.startNavBtn)
         stopNavigation = findViewById(R.id.stopNavBtn)
+        sharedPreferences = getSharedPreferences(packageName, MODE_PRIVATE)
 
+        getDevice()
         initClickListeners()
-
-        val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        val pairedDevices = mBluetoothAdapter.bondedDevices
-        val listOfPairDevices: MutableList<String> = ArrayList()
-        for (bt in pairedDevices) listOfPairDevices.add(bt.name)
     }
 
     private fun initClickListeners() {
@@ -53,13 +58,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         connectBtn.setOnClickListener {
+            if (!deviceHWAddressAvailable) {
+                Snackbar.make(it, "Select Device First!", Snackbar.LENGTH_LONG).show()
+                showDeviceDialog()
+                return@setOnClickListener
+            }
+
             if (!serviceStarted) {
                 Snackbar.make(it, "Start Service First!", Snackbar.LENGTH_LONG).show()
-            } else {
-                val intent = Intent(MainNotificationService.CONNECT_BT)
-                sendBroadcast(intent)
-                Snackbar.make(it, "Connecting to TVS", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+            val intent = Intent(MainNotificationService.CONNECT_BT)
+            sendBroadcast(intent)
+            Snackbar.make(it, "Connecting to TVS", Snackbar.LENGTH_SHORT).show()
+
         }
 
         startNavigation.setOnClickListener {
@@ -81,6 +93,57 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(it, "Stopped Navigation", Snackbar.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showDeviceDialog() {
+        val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val pairedDevices = mBluetoothAdapter.bondedDevices
+        val pairedDevicesMap:HashMap<String,String> = HashMap()
+        for (bt in pairedDevices){
+            pairedDevicesMap[bt.name] = bt.address
+        }
+
+        val pairedDevicesNamesArrayAdaptor =
+            ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_selectable_list_item)
+        pairedDevicesNamesArrayAdaptor.addAll(pairedDevicesMap.keys)
+
+        val builder = AlertDialog.Builder(this@MainActivity)
+
+        builder.setTitle("Choose a paired device")
+        builder.setAdapter(pairedDevicesNamesArrayAdaptor) { _, which ->
+            val device = pairedDevicesNamesArrayAdaptor.getItem(which)
+            val address = pairedDevicesMap[device]
+            if (device != null && address != null) {
+                setDevice(device, address)
+            }
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun setDevice(device:String, address:String) {
+        with (sharedPreferences.edit()) {
+            putString(getString(R.string.device_name), device)
+            putString(getString(R.string.device_address), address)
+            apply()
+        }
+        setDeviceString(device, address)
+        deviceHWAddressAvailable = true
+    }
+
+    private fun getDevice() {
+        val device = sharedPreferences.getString(getString(R.string.device_name), null)
+        val address = sharedPreferences.getString(getString(R.string.device_address), null)
+
+        if (!device.isNullOrEmpty() && !address.isNullOrEmpty()) {
+            setDeviceString(device, address)
+            deviceHWAddressAvailable = true
+        }
+    }
+
+    private fun setDeviceString(device: String, address: String) {
+        val deviceStr = "$device ($address)"
+        deviceString.text = deviceStr
     }
 
     private fun startService() {
