@@ -16,6 +16,7 @@ import sharan.experiments.myapplication.services.MainNotificationService
 
 class MainActivity : AppCompatActivity() {
     private lateinit var connectBtn: Button
+    private lateinit var chooseDevice: Button
     private lateinit var startService: Button
     private lateinit var stopService: Button
     private lateinit var startNavigation: Button
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
 
         connectBtn = findViewById(R.id.connectBtn)
         deviceString = findViewById(R.id.bluetoothDeviceAddressTV)
+        chooseDevice = findViewById(R.id.chooseDeviceBtn)
+
         startService = findViewById(R.id.startService)
         stopService = findViewById(R.id.stopService)
 
@@ -92,6 +95,10 @@ class MainActivity : AppCompatActivity() {
                 sendBroadcast(intent)
                 Snackbar.make(it, "Stopped Navigation", Snackbar.LENGTH_SHORT).show()
             }
+        }
+
+        chooseDevice.setOnClickListener {
+            showDeviceDialog()
         }
     }
 

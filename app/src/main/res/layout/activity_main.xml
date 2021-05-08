@@ -40,6 +40,11 @@
         android:layout_height="wrap_content" />
 
     <Button
+        android:id="@+id/chooseDeviceBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_device" />
+    <Button
         android:layout_marginTop="25dp"
         android:id="@+id/startNavBtn"
         android:layout_width="wrap_content"
