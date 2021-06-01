@@ -47,7 +47,13 @@ Let's decode them:
 - The pictogram id is a unique id for the images shown in the console.
 
 ## Screenshots
+[<img src="/readme/screenshots/Screenshot_20210513-173948457.jpg" align="left"
+width="200"
+    hspace="10" vspace="10">](/readme/screenshots/Screenshot_20210513-173948457.jpg)
 
+[<img src="/readme/screenshots/Screenshot_20210513-173945084.jpg" align="center"
+width="200"
+    hspace="10" vspace="10">](/readme/screenshots/Screenshot_20210513-173945084.jpg)
 
 ## Permissions
 
