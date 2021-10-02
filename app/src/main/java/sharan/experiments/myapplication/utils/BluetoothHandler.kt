@@ -126,7 +126,15 @@ class BluetoothHandler(context: Context, deviceAddress: String) {
         if (!isConnected) connectToTVS()
         if (isConnected) {
             Log.d("tag", "writeToTVS - ${byteArray.decodeToString()}")
-            tvsPeripheral.writeCharacteristic(tvsWriteCharacteristic, byteArray, WriteType.WITHOUT_RESPONSE)
+            try {
+                tvsPeripheral.writeCharacteristic(
+                    tvsWriteCharacteristic,
+                    byteArray,
+                    WriteType.WITHOUT_RESPONSE
+                )
+            } catch (e: Exception) {
+                Log.d("tag", "writeCharacteristic failed. Error: $e")
+            }
         }
     }
 
