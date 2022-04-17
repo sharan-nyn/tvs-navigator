@@ -54,10 +54,7 @@ class TVSHandler(context: Context, deviceAddress: String) {
             in 30..40 -> {
                 writeRemainingDistanceInstruction()
             }
-            in 70..100 -> {
-                writeETAInstruction()
-            }
-            101 -> {
+            41 -> {
                 count = 1
             }
             else -> {
@@ -79,19 +76,6 @@ class TVSHandler(context: Context, deviceAddress: String) {
         bluetoothHandler.writeToTVS(BluetoothBytesParser.string2bytes(instruction))
     }
 
-    private fun writeETAInstruction() {
-        val eta = navData!!.eta.localeString
-        val message = getHexString("ETA. $eta")
-        val multiLine = "01"
-        val distanceHex = getDistanceHex(0.0)
-        val unitHex = getUnitHex(DistanceUnit.M)
-        val pictogramHex = getPictogramHex(99)
-        val instruction = "${encodedN}${distanceHex}${unitHex}${pictogramHex}${multiLine}${message}${encodedDollar}"
-
-        Log.d("plaintext", "REM. DIST. $remainingDistance $remainingDistanceUnit")
-        Log.d("instructions", instruction)
-        bluetoothHandler.writeToTVS(BluetoothBytesParser.string2bytes(instruction))
-    }
 
     private fun writeNextDirectionInstruction() {
         // do direction processing
