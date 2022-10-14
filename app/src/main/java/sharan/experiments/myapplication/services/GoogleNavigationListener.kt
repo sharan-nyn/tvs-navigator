@@ -1,9 +1,9 @@
 package sharan.experiments.myapplication.services
 
 import android.content.Intent
-import me.trevi.navparser.lib.NavigationNotification
-import me.trevi.navparser.service.NAVIGATION_DATA
-import me.trevi.navparser.service.NavigationListener
+import sharan.experiments.myapplication.navparser.lib.NavigationNotification
+import sharan.experiments.myapplication.navparser.service.NAVIGATION_DATA
+import sharan.experiments.myapplication.navparser.service.NavigationListener
 
 class GoogleNavigationListener : NavigationListener() {
     override fun onCreate() {

@@ -4,8 +4,8 @@ import android.content.Context
 import android.telephony.SmsManager
 import android.util.Log
 import com.welie.blessed.BluetoothBytesParser
-import me.trevi.navparser.lib.DistanceUnit
-import me.trevi.navparser.lib.NavigationData
+import sharan.experiments.myapplication.navparser.lib.DistanceUnit
+import sharan.experiments.myapplication.navparser.lib.NavigationData
 import sharan.experiments.myapplication.utils.BluetoothHandler
 import java.util.*
 
@@ -127,13 +127,13 @@ class TVSHandler(context: Context, deviceAddress: String) {
     }
 
     fun updateValues(
-            direction: String,
-            distance: Double,
-            distanceUnit: DistanceUnit,
-            pictogramId: Int,
-            remainingDistance: Double,
-            remainingDistanceUnit: DistanceUnit,
-            navData: NavigationData
+        direction: String,
+        distance: Double,
+        distanceUnit: DistanceUnit,
+        pictogramId: Int,
+        remainingDistance: Double,
+        remainingDistanceUnit: DistanceUnit,
+        navData: NavigationData
     ) {
         this.direction = direction
         this.nextDirectionDistance = distance

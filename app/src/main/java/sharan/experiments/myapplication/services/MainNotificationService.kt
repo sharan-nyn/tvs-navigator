@@ -17,8 +17,8 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.annotation.Nullable
 import androidx.core.app.NotificationCompat
-import me.trevi.navparser.lib.NavigationData
-import me.trevi.navparser.service.NAVIGATION_DATA
+import sharan.experiments.myapplication.navparser.lib.NavigationData
+import sharan.experiments.myapplication.navparser.service.NAVIGATION_DATA
 import sharan.experiments.myapplication.App.Companion.CHANNEL_ID
 import sharan.experiments.myapplication.MainActivity
 import sharan.experiments.myapplication.R
