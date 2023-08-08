@@ -9,6 +9,7 @@ package sharan.experiments.myapplication.navparser.lib
 
 import android.app.Notification
 import android.content.Context
+import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.widget.Button
 import sharan.experiments.myapplication.navparser.lib.NavigationData
@@ -17,8 +18,9 @@ import sharan.experiments.myapplication.navparser.lib.NavigationTimestamp
 open class NavigationNotification(cx: Context, sbn: StatusBarNotification) {
     protected val mNotification : Notification = sbn.notification
     protected val mCx = cx
-    protected var mAppSrcCx: Context = mCx.createPackageContext(sbn.packageName,
-        Context.CONTEXT_IGNORE_SECURITY
+    protected var mAppSrcCx: Context = mCx.createPackageContext(
+        if (Build.VERSION.SDK_INT >= 31) SYSTEM_UI_PACKAGE_NAME else sbn.packageName,
+        Context.CONTEXT_IGNORE_SECURITY,
     )
 
     var navigationData : NavigationData = NavigationData()
@@ -33,5 +35,9 @@ open class NavigationNotification(cx: Context, sbn: StatusBarNotification) {
     fun close() {
         stopButton?.callOnClick()
         navigationData.actionIcon.bitmap?.recycle()
+    }
+
+    companion object {
+        private const val SYSTEM_UI_PACKAGE_NAME = "com.android.systemui"
     }
 }
