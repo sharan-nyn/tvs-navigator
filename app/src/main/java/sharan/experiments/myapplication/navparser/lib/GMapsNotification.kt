@@ -27,7 +27,7 @@ import java.util.*
 const val GMAPS_PACKAGE = "com.google.android.apps.maps"
 
 private val SPLIT_REGEX = "\\p{Space}+\\p{Punct}+\\p{Space}+".toRegex()
-private val ETA_REGEX = "\\p{Digit}{1,2}\\p{Punct}\\p{Digit}{2}(\\p{Space}+(AM|PM|ص|م))?".toRegex()
+private val ETA_REGEX = "\\p{Digit}{1,2}\\p{Punct}\\p{Digit}{2}(\\p{Space}+(AM|PM|am|pm|ص|م))?".toRegex()
 
 enum class ContentViewType {
     NORMAL,
