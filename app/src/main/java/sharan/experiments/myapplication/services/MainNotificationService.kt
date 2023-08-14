@@ -1,6 +1,5 @@
 package sharan.experiments.myapplication.services
 
-import android.R.drawable
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
@@ -17,12 +16,12 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.annotation.Nullable
 import androidx.core.app.NotificationCompat
-import sharan.experiments.myapplication.navparser.lib.NavigationData
-import sharan.experiments.myapplication.navparser.service.NAVIGATION_DATA
 import sharan.experiments.myapplication.App.Companion.CHANNEL_ID
 import sharan.experiments.myapplication.MainActivity
 import sharan.experiments.myapplication.R
 import sharan.experiments.myapplication.TVSHandler
+import sharan.experiments.myapplication.navparser.lib.NavigationData
+import sharan.experiments.myapplication.navparser.service.NAVIGATION_DATA
 import sharan.experiments.myapplication.utils.Direction
 import sharan.experiments.myapplication.utils.DirectionImageMapper
 
@@ -53,7 +52,7 @@ class MainNotificationService : Service() {
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("TVS Navigation Service")
             .setContentText("Ready to start navigation")
-            .setSmallIcon(drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.ic_headlamp_logo_icon)
             .setContentIntent(pendingIntent)
             .build()
 

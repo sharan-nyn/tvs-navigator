@@ -16,7 +16,6 @@ import android.service.notification.StatusBarNotification
 import kotlinx.coroutines.*
 import sharan.experiments.myapplication.BuildConfig
 import sharan.experiments.myapplication.navparser.lib.*
-import sharan.experiments.myapplication.navparser.lib.GMapsNotification
 import timber.log.Timber as Log
 
 private const val NOTIFICATIONS_THRESHOLD : Long = 500 // Ignore notifications coming earlier, in ms
@@ -155,7 +154,7 @@ open class NavigationListener : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        Log.v("Got notification from ${sbn?.packageName}")
+        Log.d("Got notification from ${sbn?.packageName}")
 
         if (sbn != null && isGoogleMapsNotification(sbn))
             handleGoogleNotification(sbn)

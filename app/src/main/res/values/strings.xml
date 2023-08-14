@@ -10,4 +10,6 @@
     <string name="device_name">DEVICE_NAME</string>
     <string name="device_address">DEVICE_ADDRESS</string>
     <string name="choose_device">Choose Device</string>
+    <string name="autoLaunchEnabled">AUTO_LAUNCH_ENABLED</string>
+    <string name="auto_launch_string">Auto Launch Service</string>
 </resources>

@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import sharan.experiments.myapplication.services.MainNotificationService
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var startNavigation: Button
     private lateinit var stopNavigation: Button
     private lateinit var deviceString: TextView
+    private lateinit var autoLaunchSwitch: SwitchCompat
 
     private var serviceStarted = false
     private var deviceHWAddressAvailable = false
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        autoLaunchSwitch = findViewById(R.id.autoLaunchSwitch)
 
         connectBtn = findViewById(R.id.connectBtn)
         deviceString = findViewById(R.id.bluetoothDeviceAddressTV)
@@ -44,10 +48,14 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences(packageName, MODE_PRIVATE)
 
         getDevice()
+        getAutoLaunchStatus()
         initClickListeners()
     }
 
     private fun initClickListeners() {
+
+        autoLaunchSwitch.setOnCheckedChangeListener { _, isChecked -> setAutoLaunch(isChecked) }
+
         startService.setOnClickListener {
             startService()
             serviceStarted = true
@@ -138,6 +146,13 @@ class MainActivity : AppCompatActivity() {
         deviceHWAddressAvailable = true
     }
 
+    private fun setAutoLaunch(value: Boolean) {
+        with (sharedPreferences.edit()) {
+            putBoolean(getString(R.string.autoLaunchEnabled), value)
+            apply()
+        }
+    }
+
     private fun getDevice() {
         val device = sharedPreferences.getString(getString(R.string.device_name), null)
         val address = sharedPreferences.getString(getString(R.string.device_address), null)
@@ -146,6 +161,11 @@ class MainActivity : AppCompatActivity() {
             setDeviceString(device, address)
             deviceHWAddressAvailable = true
         }
+    }
+
+    private fun getAutoLaunchStatus() {
+        val isAutoLaunchEnabled = sharedPreferences.getBoolean(getString(R.string.autoLaunchEnabled), false)
+        autoLaunchSwitch.isChecked = isAutoLaunchEnabled
     }
 
     private fun setDeviceString(device: String, address: String) {
