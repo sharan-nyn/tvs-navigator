@@ -5,11 +5,11 @@
  * Copyright (c) 2020 Marco Trevisan <mail@trevi.me>
  */
 
-package sharan.experiments.myapplication.navparser.service
+package sharan.experiments.tvsnavigator.navparser.service
 
 import android.app.PendingIntent
 import android.content.Intent
-import sharan.experiments.myapplication.navparser.lib.NavigationNotification
+import sharan.experiments.tvsnavigator.navparser.lib.NavigationNotification
 import timber.log.Timber as Log
 
 const val SET_INTENT = "SET_INTENT"

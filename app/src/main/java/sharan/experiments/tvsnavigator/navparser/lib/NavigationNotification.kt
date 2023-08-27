@@ -5,15 +5,15 @@
  * Copyright (c) 2020 Marco Trevisan <mail@trevi.me>
  */
 
-package sharan.experiments.myapplication.navparser.lib
+package sharan.experiments.tvsnavigator.navparser.lib
 
 import android.app.Notification
 import android.content.Context
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.widget.Button
-import sharan.experiments.myapplication.navparser.lib.NavigationData
-import sharan.experiments.myapplication.navparser.lib.NavigationTimestamp
+import sharan.experiments.tvsnavigator.navparser.lib.NavigationData
+import sharan.experiments.tvsnavigator.navparser.lib.NavigationTimestamp
 
 open class NavigationNotification(cx: Context, sbn: StatusBarNotification) {
     protected val mNotification : Notification = sbn.notification

@@ -5,7 +5,7 @@
  * Copyright (c) 2020 Marco Trevisan <mail@trevi.me>
  */
 
-package sharan.experiments.myapplication.navparser.service
+package sharan.experiments.tvsnavigator.navparser.service
 
 import android.content.Intent
 import android.net.Uri
@@ -14,8 +14,8 @@ import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import kotlinx.coroutines.*
-import sharan.experiments.myapplication.BuildConfig
-import sharan.experiments.myapplication.navparser.lib.*
+import sharan.experiments.tvsnavigator.BuildConfig
+import sharan.experiments.tvsnavigator.navparser.lib.*
 import timber.log.Timber as Log
 
 private const val NOTIFICATIONS_THRESHOLD : Long = 500 // Ignore notifications coming earlier, in ms

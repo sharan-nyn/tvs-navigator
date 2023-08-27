@@ -5,7 +5,7 @@
  * Copyright (c) 2020 Marco Trevisan <mail@trevi.me>
  */
 
-package sharan.experiments.myapplication.navparser.lib
+package sharan.experiments.tvsnavigator.navparser.lib
 
 import android.content.Context
 import android.content.res.Configuration

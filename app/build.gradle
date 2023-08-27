@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "sharan.experiments.myapplication"
+        applicationId "sharan.experiments.tvsnavigator"
         minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
@@ -32,7 +32,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    namespace 'sharan.experiments.myapplication'
+    namespace 'sharan.experiments.tvsnavigator'
 }
 
 dependencies {
